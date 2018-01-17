@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>DOTA Insight</title>
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="icon" type="image/png" href="{% static 'winrateprediction/images/oracle_icon.png' %}" />
+  {% block styles %}
+  {% endblock %}
+	<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+</head>
+<body>
+
+  <nav class="navbar navbar-default">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <span class="navbar-brand">DOTA INSIGHT</span>
+      </div>
+
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <ul class="nav navbar-nav">
+          <li class=""><a href="{% url 'home' %}">Home</a></li>
+          <li class=""><a href="{% url 'heroes:heroesHome' %}">Heroes</a></li>
+          <li class=""><a href="{% url 'home' %}">Home</a></li>
+          <!-- <li><a href="#">About</a></li> -->
+          <!-- <li><a href="#">Contact</a></li> -->
+        </ul>
+        <!-- <ul class="nav navbar-nav navbar-right">
+          <li><a href="#"><i class="fa fa-user-plus"></i> Sign Up</a></li>
+          <li><a href="#"><i class="fa fa-user"></i> Login</a></li>
+        </ul> -->
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>
+    {% block content %}
+    {% endblock %}

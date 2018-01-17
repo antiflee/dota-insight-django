@@ -1,0 +1,48 @@
+body {
+	background: url("../images/galaxy.jpg");
+	background-size: cover;
+	font-family: lato;
+	color:white;
+	background-position: center;
+}
+
+html {
+	height: 100%;
+}
+
+#content {
+	text-align: center;
+	padding-top: 15%;
+}
+
+h1 {
+	font-weight: 700;
+	font-size: 4em;
+	text-shadow: 	0 4px 3px rgba(0,0,0,0.4),
+					0 8px 13px rgba(0,0,0,0.1),
+					0 18px 23px rgba(0,0,0,0.1);
+}
+
+h3 {
+	text-shadow: 	0 4px 3px rgba(0,0,0,0.4),
+					0 8px 13px rgba(0,0,0,0.1),
+					0 18px 23px rgba(0,0,0,0.1);
+}
+
+hr {
+	border-top:1px solid #f8f8f8;
+	border-bottom:1px solid rgba(0,0,0,0,2);
+}
+
+.heroName {
+	color: white;
+	font-size: 10px;
+	opacity: 0;
+	display: inline;
+	position: absolute;
+	margin: auto;
+	left: 0;
+	right: 0;
+	top: 20%;
+  /*transition: .5s ease;*/
+}
