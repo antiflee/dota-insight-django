@@ -21,21 +21,31 @@
     	<div class="row">
     		<div class="col-lg-12">
     			<div id="content">
-    				<h1>DOTA INSIGHT</h1>
-    				<!-- <h3>Find similar academic publications</h3> -->
+    				<!-- <h1>DOTA INSIGHT</h1> -->
+    				<h3>Hero Win Rate</h3>
             <br>
     			</div>
 
-          		<div class="heroesDiv container main">
-          			{% for hero in heroes.all %}
-          			<div id="heroDiv{{ hero.hero_id }}" onClick="addHero('{{ hero.name }}','{{ hero.imageUrl }}','{{ hero.hero_id }}')" class="heroImgAndName">
-          				<img class="heroImg" src="{{ hero.imageUrl }}" alt="HeroPicture">
-          				<div class="heroName">
-          					{{ hero.name }}
-          				</div>
-          			</div>
-          			{% endfor %}
-          		</div>
+      		<div class="heroesDiv container main">
+      			{% for hero in heroes.all %}
+      			<div id="heroDiv{{ hero.hero_id }}" class="heroImgAndName">
+							<div class="row">
+								<div class="col col-lg-3">
+									<img class="heroImg" src="{{ hero.imageUrl }}" alt="HeroPicture">
+								</div>
+								<div class="heroName">
+									{{ hero.name }}
+								</div>
+								<div class="col col-lg-8">
+									<div class="progress">
+										<div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+									</div>
+								</div>
+							</div>
+							<br>
+      			</div>
+      			{% endfor %}
+      		</div>
     		</div>
     	</div>
     </div>
@@ -44,6 +54,38 @@
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.js"></script>
   <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   <script type="text/javascript">
+
+		function updateWinRate() {
+			console.log("Updating...");
+			$.ajax({
+				url: "{% url 'heroes:heroesWinRate' %}",
+				method: "GET",
+				dataType: "json",
+				success: function(data) {
+					console.log("Successfully retrieved win rates. Updating progress bar");
+					updateProgressBar($.parseJSON(data));
+				},
+				error: function(data) {
+					console.log('error');
+					console.log(data);
+				}
+			})
+		}
+
+		function updateProgressBar(data) {
+			$(data).each(function(i,val){
+			    $.each(val,function(k,v){
+								// Convert the format from 0.66667 to 67%
+								var vFormatted = parseInt(v * 100)
+			          console.log(k+" : "+ v);
+								var bar = $("#heroDiv"+k.toString()+" .progress .progress-bar")
+								bar.width(vFormatted.toString()+"%");
+							});
+			})
+			updateWinRate();
+		};
+
+		$(document).ready(updateWinRate());
 
   </script>
 </body>

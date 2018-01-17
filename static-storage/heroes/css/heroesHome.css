@@ -1,5 +1,6 @@
 body {
-	background: url("../images/galaxy.jpg");
+	/* background: url("../images/galaxy.jpg"); */
+	background-color: #201D1C;
 	background-size: cover;
 	font-family: lato;
 	color:white;
@@ -12,7 +13,7 @@ html {
 
 #content {
 	text-align: center;
-	padding-top: 15%;
+	/* padding-top: 15%; */
 }
 
 h1 {
@@ -34,6 +35,10 @@ hr {
 	border-bottom:1px solid rgba(0,0,0,0,2);
 }
 
+.heroImg {
+	float: right;
+}
+
 .heroName {
 	color: white;
 	font-size: 10px;
@@ -45,4 +50,16 @@ hr {
 	right: 0;
 	top: 20%;
   /*transition: .5s ease;*/
+}
+
+.progress {
+	width: 70%;
+	display: inline;
+}
+
+.progress-bar {
+	-webkit-transition: width 1s ease-in-out;
+	-moz-transition: width 1s ease-in-out;
+	-o-transition: width 1s ease-in-out;
+	transition: width 1s ease-in-out;
 }
