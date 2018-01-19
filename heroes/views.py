@@ -10,7 +10,27 @@ def heroes(request):
 
     return render(request, 'heroes/heroesHome.html', {'heroes':heroes})
 
+def heroDetail(request, pk):
+    heroes = Hero.objects.all()
+    # Retrieve basic info of the hero from local DB sqlite3
+    theHero = Hero.objects.filter(hero_id=pk).first()
+    # To-do: Retriev real time info of the hero from database (Cassandra?)
+    #
 
+    if not theHero:
+        return render(request, 'heroes/heroesHome.html',{'heroes':heroes})
+
+    heroPairs = getHeroPairsWinRate(pk)
+
+    for i in range(len(heroPairs)):
+        winRate, heroId = heroPairs[i]
+        winRate = str(int(float(winRate)*100))+"%"
+        hero = Hero.objects.filter(hero_id=heroId).first()
+        heroPairs[i] = (heroId, hero.imageUrl, winRate)
+
+    return render(request,
+                'heroes/heroDetail.html',
+                {'theHero':theHero, 'heroes':heroes, 'heroPairs':heroPairs})
 
 # Get the win rate for all heroes. Return a json file.
 
@@ -35,3 +55,52 @@ def getHeroesWinRate(request):
     resJson = json.dumps(res)
 
     return JsonResponse(resJson,safe=False)
+
+# Get the win rate of a specific hero pairing with all other heroes
+# (Not used) Returns a dictionary: key: another hero's id, value: win rate.
+# Returns a list of max 10 heroes that ordered by win rate (high to low).
+
+def getHeroPairsWinRate(heroId):
+
+    HOSTURL = "ec2-34-213-4-249.us-west-2.compute.amazonaws.com"
+    r = redis.StrictRedis(host=HOSTURL, port=6379, db=0)
+
+    res = []
+
+    for i in range(1, 120):
+        if i != heroId:
+            key = str(heroId)+","+str(i)
+            winRate = r.get(key)
+
+            if winRate is not None:
+                res.append((winRate.decode("utf-8"),i))
+
+    res.sort(key=lambda x: x[0], reverse=True)
+    res = res[:min(len(res), 10)]
+
+    return res
+
+
+# Get the win rate of a specific hero pairing with all other heroes
+# (Not used) Returns a dictionary: key: another hero's id, value: win rate.
+# Returns a list of max 10 heroes that ordered by win rate (high to low).
+
+def getHeroPairsWinRate(heroId):
+
+    HOSTURL = "ec2-34-213-4-249.us-west-2.compute.amazonaws.com"
+    r = redis.StrictRedis(host=HOSTURL, port=6379, db=0)
+
+    res = []
+
+    for i in range(1, 120):
+        if i != heroId:
+            key = str(heroId)+","+str(i)
+            winRate = r.get(key)
+
+            if winRate is not None:
+                res.append((winRate.decode("utf-8"),i))
+
+    res.sort(key=lambda x: x[0], reverse=True)
+    res = res[:min(len(res), 10)]
+
+    return res

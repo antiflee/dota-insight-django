@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block styles %}
+
+	<link rel="stylesheet" type="text/css" href="{% static 'heroes/css/heroDetail.css' %}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script
+	  src="https://code.jquery.com/jquery-3.2.1.min.js"
+	  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+	  crossorigin="anonymous">
+	</script>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+  <h2>
+    {{ theHero.name }}
+  </h2>
+  <hr>
+
+  <div class="row">
+    <div class="col col-lg-7">
+      <h3>Win Rate Over Time</h3>
+      <div id="heroWinRateDiv" width="960" height="500" style="margin-top:42px;"></div>
+    </div>
+    <div class="col col-lg-2">
+        <h3>Best with</h3>
+        <hr>
+        <div class="heroPairsDiv">
+          <table id="heroPairsWinRate">
+            <tr>
+              <th>Hero</th>
+              <th>Win Rate</th>
+            </tr>
+            {% for id, imgUrl, winRate in heroPairs %}
+              <tr class="">
+                <td><a href="{% url 'heroes:heroesHome' %}{{id}}"><img src="{{ imgUrl }}" alt=""></a></td>
+                <td><h3>{{ winRate }}</h3></td>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
+    </div>
+    <div class="col col-lg-2">
+        <h3>Best versus</h3>
+        <hr>
+        <div class="heroPairsDiv">
+          <table id="heroPairsWinRate">
+            <tr>
+              <th>Hero</th>
+              <th>Win Rate</th>
+            </tr>
+            {% for id, imgUrl, winRate in heroPairs %}
+              <tr class="">
+                <td><a href="{% url 'heroes:heroesHome' %}{{id}}"><img src="{{ imgUrl }}" alt=""></a></td>
+                <td><h3>{{ winRate }}</h3></td>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.js"></script>
+  <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script type="text/javascript">
+  var trace1 = {
+    x: [1, 2, 3, 4],
+    y: [10, 15, 13, 17],
+    mode: 'markers'
+  };
+
+  var trace2 = {
+    x: [2, 3, 4, 5],
+    y: [16, 5, 11, 9],
+    mode: 'lines'
+  };
+
+  var trace3 = {
+    x: [1, 2, 3, 4],
+    y: [12, 9, 15, 12],
+    mode: 'lines+markers'
+  };
+
+  var data = [ trace1, trace2, trace3 ];
+
+  var layout = {
+    title:'Line and Scatter Plot'
+  };
+
+  Plotly.newPlot('heroWinRateDiv', data, layout);
+  </script>
+</body>
+</html>
+
+ {% endblock %}
