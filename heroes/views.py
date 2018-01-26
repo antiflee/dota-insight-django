@@ -3,6 +3,21 @@ from django.http import JsonResponse
 
 from .models import Hero
 
+# Open sessions to Redis and Cassandra
+
+import redis
+import os
+import json
+
+HOSTURL = "ec2-34-213-4-249.us-west-2.compute.amazonaws.com"
+r = redis.StrictRedis(host=HOSTURL, port=6379, db=0)
+
+from cassandra.cluster import Cluster
+
+CASSANDRA_URL = "ec2-34-213-32-67.us-west-2.compute.amazonaws.com"
+cluster = Cluster([CASSANDRA_URL])
+cassSession = cluster.connect("ks")
+
 # Create your views here.
 def heroes(request):
 
@@ -34,16 +49,10 @@ def heroDetail(request, pk):
 
 # Get the win rate for all heroes. Return a json file.
 
-import redis
-import os
-import json
-
 def getHeroesWinRate(request):
 
     # HOSTURL = os.environ.get('AWS_REDIS_URL')
     # print(HOSTURL)
-    HOSTURL = "ec2-34-213-4-249.us-west-2.compute.amazonaws.com"
-    r = redis.StrictRedis(host=HOSTURL, port=6379, db=0)
 
     res = {}
 
@@ -62,9 +71,6 @@ def getHeroesWinRate(request):
 
 def getHeroPairsWinRate(heroId):
 
-    HOSTURL = "ec2-34-213-4-249.us-west-2.compute.amazonaws.com"
-    r = redis.StrictRedis(host=HOSTURL, port=6379, db=0)
-
     res = []
 
     for i in range(1, 120):
@@ -87,9 +93,6 @@ def getHeroPairsWinRate(heroId):
 
 def getHeroPairsWinRate(heroId):
 
-    HOSTURL = "ec2-34-213-4-249.us-west-2.compute.amazonaws.com"
-    r = redis.StrictRedis(host=HOSTURL, port=6379, db=0)
-
     res = []
 
     for i in range(1, 120):
@@ -104,3 +107,27 @@ def getHeroPairsWinRate(heroId):
     res = res[:min(len(res), 10)]
 
     return res
+
+
+# Query Cassandra for the historical win rate of a hero
+
+def getHeroWinRateHistory(request, pk):
+
+    heroId = pk
+    rows = cassSession.execute('SELECT * FROM hero_win_rate WHERE hero_id=%s', (str(heroId),))
+    dates, win_rates, counts = [], [], []
+
+    for row in rows:
+        dates.append(formatDate(row.year,row.month,row.day))
+        win_rates.append(round(row.win_rate,3))
+        counts.append(row.count)
+
+    res = {'dates':dates,'win_rates':win_rates,'counts':counts}
+
+    resJson = json.dumps(res)
+
+    return JsonResponse(resJson,safe=False)
+
+def formatDate(year,month,day):
+    # From integers to yyyy-MM-dd
+    return str(year) + "-" + str(month) + "-" + str(day)

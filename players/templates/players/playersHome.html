@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block styles %}
+
+	<link rel="stylesheet" type="text/css" href="{% static 'players/css/playersHome.css' %}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script
+	  src="https://code.jquery.com/jquery-3.2.1.min.js"
+	  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+	  crossorigin="anonymous">
+	</script>
+
+{% endblock %}
+{% block content %}
+
+<div class="container">
+	<form class="form-inline">
+		<div class="col-auto">
+			<label class="sr-only" for="dateInput">dateInput</label>
+			<input type="text" class="form-control mb-2" name="dateInput" id="dateInput" placeholder="yyyyMMdd">
+		</div>
+		<div class="col-auto">
+			<button id="dateQuerySubmit" type="submit" class="btn btn-primary mb-2">Submit</button>
+		</div>
+	</form>
+
+	<div class="row">
+
+
+    <div class="col-lg-5">
+
+    </div>
+
+    <div class="col-lg-7">
+
+      <div>
+        <div id="regions_div">
+
+        </div>
+        <ul id="regionInfo">
+
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.js"></script>
+  <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+
+  var regionArray = [['Country','Players']];
+
+  google.charts.load('current', {
+    'packages':['geochart'],
+    // Note: you will need to get a mapsApiKey for your project.
+    // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
+    'mapsApiKey': 'AIzaSyDPwCzIUfh7P6lsYNeuS1eiJPTPAKaEuCU'
+  });
+  google.charts.setOnLoadCallback(drawRegionsMap);
+
+  function drawRegionsMap() {
+
+    var data = google.visualization.arrayToDataTable(regionArray);
+
+    var options = {region: 'world', resolution: 'countries', enableRegionInteractivity: false};
+
+    var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+
+    chart.draw(data, options);
+  }
+
+	function updateTimeRegion(date) {
+		console.log("Updating...");
+		$.ajax({
+			url: "{% url 'players:realTimeRegion' %}",
+			data: {date:date},
+			method: "GET",
+			dataType: "json",
+			success: function(data) {
+				console.log("Successfully retrieved region num. Updating...");
+				updateRegionInfo($.parseJSON(data));
+			},
+			error: function(data) {
+				console.log('error');
+				console.log(data);
+			}
+		})
+	}
+
+	function updateRegionInfo(data) {
+    var regionInfo = $("#regionInfo");
+    regionInfo.empty();
+    regionArray = [['Country', 'Players']];
+		$(data).each(function(i,val){
+		    $.each(val,function(country,num){
+              console.log(country + ":" + num);
+              // regionInfo.append("<li>"+country+":"+num+"</li>")
+              regionArray.push([country,num])
+						});
+		})
+    console.log(regionArray)
+    drawRegionsMap();
+		// setTimeout(updateRealTimeRegion(),5000);
+	};
+
+	function startQuery() {
+		var date = $("input[name=dateInput]").val();
+		console.log("Query date: "+date);
+
+		updateTimeRegion(date);
+	}
+
+	$(document.body).on("click", "#dateQuerySubmit", function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    startQuery();
+  })
+  </script>
+</body>
+</html>
+
+ {% endblock %}

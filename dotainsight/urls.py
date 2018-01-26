@@ -25,6 +25,7 @@ urlpatterns = [
     url('antiflee/', admin.site.urls),
     url(r'^$', home, name='home'),
     url(r'^heroes/', include('heroes.urls')),
+    url(r'^players/', include('players.urls')),
 ]
 
 if settings.DEBUG:
