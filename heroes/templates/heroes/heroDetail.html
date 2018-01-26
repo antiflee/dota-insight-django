@@ -18,10 +18,12 @@
 {% block content %}
 
 <div class="container">
-  <h2>
-    {{ theHero.name }}
-  </h2>
-	<img id="heroAvatar" src="{{ theHero.imageUrl }}" alt="HeroPicture">
+	<div class="">
+	  <h2>
+	    {{ theHero.name }}
+	  </h2>
+		<img src="{{ theHero.imageUrl }}" alt="HeroPicture">
+	</div>
   <hr>
 
   <div class="row">
