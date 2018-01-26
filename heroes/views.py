@@ -46,7 +46,7 @@ def heroDetail(request, pk):
     heroCounterPairs = getHeroCounterPairsWinRate(pk)
 
     for i in range(len(heroCounterPairs)):
-        winRate, heroId = heroPairs[i]
+        winRate, heroId = heroCounterPairs[i]
         winRate = str(int(float(winRate)*100))+"%"
         hero = Hero.objects.filter(hero_id=heroId).first()
         heroCounterPairs[i] = (heroId, hero.imageUrl, winRate)
