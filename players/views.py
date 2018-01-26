@@ -1,27 +1,55 @@
-from django.shortcuts import render
-from django.http import JsonResponse
-
-from .models import Cluster
-
-# Create your views here.
-def players(request):
-    return render(request, 'players/playersHome.html')
-
-def playerDetail(request,pk):
-    # SELECT * FROM ks.player_daily WHERE account_id
-    return render(request, 'players/playerDetail.html')
-
-
 import os
 import json
-from collections import defaultdict
-
 import redis
+
+from django.shortcuts import render
+from django.http import JsonResponse
+from .models import Cluster
+from collections import defaultdict
 from cassandra.cluster import Cluster as Clstr
 
 CASSANDRA_URL = "ec2-34-213-32-67.us-west-2.compute.amazonaws.com"
 cluster = Clstr([CASSANDRA_URL])
 cassSession = cluster.connect("ks")
+
+#########
+# Views #
+#########
+
+def players(request):
+    return render(request, 'players/playersHome.html')
+
+def playerDetail(request,account_id):
+    return render(request, 'players/playerDetail.html', {'account_id':account_id})
+
+
+###########
+# Methods #
+###########
+
+def formatDate(year,month,day):
+    # From integers to yyyy-MM-dd
+    return str(year) + "-" + str(month) + "-" + str(day)
+    
+def getPlayerActivityHistory(request,account_id):
+
+    rows = cassSession.execute('SELECT * FROM player_daily WHERE account_id=%s', (int(account_id),))
+    dates, matches, wins, total_time = [], [], [], []
+
+    for row in rows:
+        dates.append(formatDate(row.year,row.month,row.day))
+        matches.append(row.matches_played)
+        wins.append(row.matches_won)
+        total_time.append(row.time_played_in_sec)
+
+    res = {'dates':dates,'matches':matches,'wins':wins,'total_time':total_time}
+
+    resJson = json.dumps(res)
+
+    return JsonResponse(resJson,safe=False)
+
+
+
 
 # Get num of players in each region from Redis
 def realTimeRegion(request):

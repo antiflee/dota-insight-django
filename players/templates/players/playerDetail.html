@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block styles %}
+
+	<link rel="stylesheet" type="text/css" href="{% static 'heroes/css/heroDetail.css' %}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script
+	  src="https://code.jquery.com/jquery-3.2.1.min.js"
+	  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+	  crossorigin="anonymous">
+	</script>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+	<div class="">
+	  <h2 style="display:inline-block;">
+	    {{ account_id }}
+	  </h2>
+	</div>
+  <hr>
+
+  <div class="row">
+    <div class="col col-lg-7">
+      <h3>Player's activity</h3>
+			<h4 id="messageUpdating">Updating...</h4>
+      <div id="playerActivityDiv" width="960" height="500" style="margin-top:42px;"></div>
+    </div>
+  </div>
+
+</div>
+
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.js"></script>
+  <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script type="text/javascript">
+
+	var accountId = {{ account_id }}
+
+	function getPlayerActivityHistory(accountId) {
+		$.ajax({
+			url: "/players/"+accountId.toString()+"/getPlayerActivityHistory",
+			method: "GET",
+			dataType: "json",
+			success: function(data) {
+				console.log("Successfully retrieved player's activity.");
+				console.log($.parseJSON(data));
+				$("#messageUpdating").empty();
+				plotPlayerActivityHistory($.parseJSON(data));
+			},
+			error: function(data) {
+				console.log('error');
+				console.log(data);
+				$("#messageUpdating").text("Failed retrieving data... Please try again later.");
+			}
+		})
+	}
+
+	function plotPlayerActivityHistory(data) {
+
+		var trace1 = {
+			x: data['dates'],
+			y: data['matches'],
+        type: 'bar',
+        name: 'Matches Played',
+        marker: {
+          color: 'rgb(49,130,189)',
+          opacity: 0.7,
+        }
+		};
+		var trace2 = {
+			x: data['dates'],
+			y: data['wins'],
+      type: 'bar',
+      name: 'Matches Won',
+      marker: {
+        color: 'rgb(24,24,24)',
+        opacity: 0.5
+      }
+		};
+		var trace3 = {
+			x: data['dates'],
+			y: data['total_time'],
+      type: 'bar',
+      name: 'Time Played',
+      marker: {
+        color: 'rgb(244,244,24)',
+        opacity: 1
+      }
+		};
+		var plot_data = [trace1,trace2];
+	  var layout = {
+		  xaxis: {
+		    type: 'date',
+		    title: 'Date'
+		  },
+		  yaxis: {
+				// range: [0,1],
+		    title: "Player's Activity"
+		  },
+      barmode: 'group',
+	  };
+
+		Plotly.newPlot('playerActivityDiv', plot_data, layout);
+	}
+
+	$(document).ready(getPlayerActivityHistory(accountId))
+  </script>
+</body>
+</html>
+
+ {% endblock %}

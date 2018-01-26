@@ -30,8 +30,8 @@
 
 		<form class="form-inline">
 			<div class="col-auto">
-				<label class="sr-only" for="dateInput">dateInput</label>
-				<input type="text" class="form-control mb-2" name="dateInput" id="accIdInput" placeholder="Enter your account id...">
+				<label class="sr-only" for="dateInput">accountIdInput</label>
+				<input type="text" class="form-control mb-2" name="accountIdInput" id="accIdInput" placeholder="Enter your account id...">
 			</div>
 			<div class="col-auto">
 				<button style="display:none;" id="playerDetailQuerySubmit" type="submit" class="btn btn-primary mb-2">Submit</button>
@@ -172,8 +172,10 @@
 			// setTimeout(updateRealTimeRegion(),5000);
 		};
 
-		//////////////////////
-
+		function updateDAUAndTimeRegion(date) {
+				updateDAU(date);
+				updateTimeRegion(date);
+		}
 		function startQuery() {
 			var date = $("input[name=dateInput]").val();
 			console.log("Query date: "+date);
@@ -181,16 +183,23 @@
 			updateDAUAndTimeRegion(date);
 		}
 
+		////////////////////
+		// Event listener //
+		////////////////////
+
 		$(document.body).on("click", "#dateQuerySubmit", function(e) {
 	    e.preventDefault();
 	    e.stopPropagation();
 	    startQuery();
 	  })
 
-		function updateDAUAndTimeRegion(date) {
-				updateDAU(date);
-				updateTimeRegion(date);
-		}
+		$(document.body).on("click", "#playerDetailQuerySubmit", function(e) {
+	    e.preventDefault();
+	    e.stopPropagation();
+			var account_id = $("input[name=accountIdInput]").val();
+			window.location.href = "{% url 'players:playersHome' %}"+account_id;
+	  })
+
 
 		$(document).ready(updateDAUAndTimeRegion("20120427"))
 	  </script>
