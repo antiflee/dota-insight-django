@@ -43,9 +43,18 @@ def heroDetail(request, pk):
         hero = Hero.objects.filter(hero_id=heroId).first()
         heroPairs[i] = (heroId, hero.imageUrl, winRate)
 
+    heroCounterPairs = getHeroCounterPairsWinRate(pk)
+
+    for i in range(len(heroCounterPairs)):
+        winRate, heroId = heroPairs[i]
+        winRate = str(int(float(winRate)*100))+"%"
+        hero = Hero.objects.filter(hero_id=heroId).first()
+        heroCounterPairs[i] = (heroId, hero.imageUrl, winRate)
+
     return render(request,
                 'heroes/heroDetail.html',
-                {'theHero':theHero, 'heroes':heroes, 'heroPairs':heroPairs})
+                {'theHero':theHero, 'heroes':heroes,
+                'heroPairs':heroPairs,'heroCounterPairs':heroCounterPairs})
 
 # Get the win rate for all heroes. Return a json file.
 
@@ -87,17 +96,17 @@ def getHeroPairsWinRate(heroId):
     return res
 
 
-# Get the win rate of a specific hero pairing with all other heroes
+# Get the win rate of a specific hero counter pairing with all other heroes
 # (Not used) Returns a dictionary: key: another hero's id, value: win rate.
 # Returns a list of max 10 heroes that ordered by win rate (high to low).
 
-def getHeroPairsWinRate(heroId):
+def getHeroCounterPairsWinRate(heroId):
 
     res = []
 
     for i in range(1, 120):
         if i != heroId:
-            key = str(heroId)+","+str(i)
+            key = "counter,"+str(heroId)+","+str(i)
             winRate = r.get(key)
 
             if winRate is not None:

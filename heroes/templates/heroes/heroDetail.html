@@ -56,7 +56,7 @@
               <th>Hero</th>
               <th>Win Rate</th>
             </tr>
-            {% for id, imgUrl, winRate in heroPairs %}
+            {% for id, imgUrl, winRate in heroCounterPairs %}
               <tr class="">
                 <td><a href="{% url 'heroes:heroesHome' %}{{id}}"><img src="{{ imgUrl }}" alt=""></a></td>
                 <td><h3>{{ winRate }}</h3></td>
