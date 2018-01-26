@@ -7,6 +7,11 @@ from .models import Cluster
 def players(request):
     return render(request, 'players/playersHome.html')
 
+def playerDetail(request,pk):
+    # SELECT * FROM ks.player_daily WHERE account_id
+    return render(request, 'players/playerDetail.html')
+
+
 import os
 import json
 from collections import defaultdict
