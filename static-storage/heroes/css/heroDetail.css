@@ -55,3 +55,10 @@ td, th {
 #heroPairsWinRate {
 	border: 1px solid white;
 }
+
+#heroAvatar {
+	position: absolute;
+    top: 77px;
+    left: 187px;
+    width: 100px;
+}
