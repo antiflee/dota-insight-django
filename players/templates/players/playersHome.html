@@ -61,31 +61,45 @@
 	// DAU Plot over time //
 	////////////////////////
 
-	var trace1 = {
-		x: [1, 2, 3, 4],
-		y: [10, 15, 13, 17],
-		mode: 'markers'
-		};
+	function updateDAU(date) {
+		console.log("Updating DAU...");
+		$.ajax({
+			url: "{% url 'players:DAU' %}",
+			data: {date:date},
+			method: "GET",
+			dataType: "json",
+			success: function(data) {
+				console.log("Successfully retrieved DAU. Updating...");
+				DAUPlot($.parseJSON(data));
+			},
+			error: function(data) {
+				console.log('error');
+				console.log(data);
+			}
+		})
+	}
 
-		var trace2 = {
-		x: [2, 3, 4, 5],
-		y: [16, 5, 11, 9],
-		mode: 'lines'
-		};
+	function DAUPlot(data) {
+			var trace = {
+				x: data['dates'],
+				y: data['nums'],
+				mode: 'lines',
+				name: 'Daily Active Users'
+			};
+			var plot_data = [trace];
+			var layout = {
+				xaxis: {
+					type: 'date',
+					title: 'Date'
+				},
+				yaxis: {
+					// tickformat: ',.1%',
+					title: 'Number of Unique '
+				}
+			};
 
-		var trace3 = {
-		x: [1, 2, 3, 4],
-		y: [12, 9, 15, 12],
-		mode: 'lines+markers'
-		};
-
-		var data = [ trace1, trace2, trace3 ];
-
-		var layout = {
-		title:'Some Fake Data'
-		};
-
-		Plotly.newPlot('DAUDiv', data, layout);
+			Plotly.newPlot('DAUDiv', plot_data, layout);
+	}
 
 
 		//////////////////////////////
@@ -147,11 +161,13 @@
 			// setTimeout(updateRealTimeRegion(),5000);
 		};
 
+		//////////////////////
+
 		function startQuery() {
 			var date = $("input[name=dateInput]").val();
 			console.log("Query date: "+date);
 
-			updateTimeRegion(date);
+			updateDAUAndTimeRegion(date);
 		}
 
 		$(document.body).on("click", "#dateQuerySubmit", function(e) {
@@ -160,7 +176,12 @@
 	    startQuery();
 	  })
 
-		$(document).ready(updateTimeRegion("20120501"))
+		function updateDAUAndTimeRegion(date) {
+				updateDAU(date);
+				updateTimeRegion(date);
+		}
+
+		$(document).ready(updateDAUAndTimeRegion("20120427"))
 	  </script>
 </body>
 </html>

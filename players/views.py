@@ -46,7 +46,50 @@ def realTimeRegion(request):
 
     return JsonResponse(resJson,safe=False)
 
+# Given a date, returns DAU in the following 15 days.
+from datetime import date as datetime_date, timedelta
 
+def DAU(request):
+    date = request.GET['date']
+    year, month, day = int(date[:4]), int(date[4:6]), int(date[6:])
+
+    start_date = datetime_date(year,month,day)
+    delta = 15
+
+    date_list, num_list = [], []
+
+    for i in range(delta + 1):
+        query_date = (start_date + timedelta(days=i)).strftime("%Y-%m-%d")
+
+        date_list.append(query_date)
+
+        # Query Cassandra for that specific date
+        num = queryDAU(query_date)
+        num_list.append(int(num))
+
+    res = {'dates':date_list,'nums':num_list}
+
+    resJson = json.dumps(res)
+
+    return JsonResponse(resJson,safe=False)
+
+def queryDAU(date):
+    date_list = date.split("-")
+    if len(date_list) != 3:
+        return -1
+
+    year, month, day = int(date_list[0]),int(date_list[1]),int(date_list[2])
+
+    rows = cassSession.execute('SELECT num FROM daily_active_users ' +
+                'WHERE year=%s AND month=%s AND day=%s',
+                (year, month, day))
+
+    num = 0
+    for row in rows:
+        # There should be only 1 row
+        num = int(row.num)
+
+    return num
 
 
 # Initialize clusters info
