@@ -17,49 +17,58 @@
 {% block content %}
 
 <div class="container">
-	<form class="form-inline">
-		<div class="col-auto">
-			<label class="sr-only" for="dateInput">dateInput</label>
-			<input type="text" class="form-control mb-2" name="dateInput" value="20120510" id="dateInput" placeholder="yyyyMMdd">
-		</div>
-		<div class="col-auto">
-			<button style="display:block;" id="dateQuerySubmit" type="submit" class="btn btn-primary mb-2">Submit</button>
-		</div>
-	</form>
-
-		<form class="form-inline">
-			<div class="col-auto">
-				<label class="sr-only" for="dateInput">accountIdInput</label>
-				<input type="text" class="form-control mb-2" name="accountIdInput"
-					value="8057" id="accIdInput" placeholder="Enter your account id...">
-			</div>
-			<div class="col-auto">
-				<button style="display:block;" id="playerDetailQuerySubmit" type="submit" class="btn btn-primary mb-2">Submit</button>
-			</div>
-		</form>
 
 	<div class="row">
-
-
+		<div class="col-lg-2">
+			<form class="form-inline">
+				<h4>Query with dates</h4>
+				<div class="col-auto">
+					<label class="sr-only" for="dateInput">dateInput</label>
+					<input type="text" class="form-control mb-2" name="dateInput" value="20120510" id="dateInput" placeholder="yyyyMMdd">
+				</div>
+				<div class="col-auto">
+					<button style="display:block;position:relative;top:-34px;left:104px"
+					id="dateQuerySubmit" type="submit" class="btn btn-success mb-2">Submit</button>
+				</div>
+			</form>
+		</div>
+		<div class="col-lg-3">
+			<form class="form-inline">
+				<h4>Query with account id</h4>
+				<div class="col-auto">
+					<label class="sr-only" for="dateInput">accountIdInput</label>
+					<input type="text" class="form-control mb-2" name="accountIdInput"
+						value="8057" id="accIdInput" placeholder="Enter your account id...">
+				</div>
+				<div class="col-auto">
+					<button style="display:block;position:relative;top:-34px;left:104px"
+					id="playerDetailQuerySubmit" type="submit" class="btn btn-primary mb-2">Submit</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	
+	<div id="queryWithDatesDiv" class="row">
     <div class="col-lg-6">
-
-				<h3>Daily Active Users</h3>
+				<h3>Active Players <span class="the-date-queried"><span></h3>
 				<div id="DAUDiv" width="960" height="500" style="margin-top:42px;"></div>
     </div>
-
     <div class="col-lg-6">
-
       <div>
-        <div id="regions_div" style="position:relative;top:88px;">
-
-        </div>
-        <ul id="regionInfo">
-
-        </ul>
+				<h3>Distribution of Players <span class="the-date-queried"><span></h3>
+        <div id="regions_div" style="position:relative;top:42px;"></div>
+        <ul id="regionInfo"></ul>
       </div>
-
     </div>
   </div>
+
+	<div id="queryWithAccountIdDiv" class="row">
+		<div class="row">
+			<div id="playerActivityDiv" class="col-lg-12">
+
+			</div>
+		</div>
+	</div>
 </div>
 
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.js"></script>
@@ -95,7 +104,11 @@
 				x: data['dates'],
 				y: data['nums'],
 				mode: 'lines',
-				name: 'Daily Active Users'
+				name: 'Daily Active Users',
+			  line: {
+			    color: '#80CAF6',
+			    shape: 'spline'
+			  }
 			};
 			var plot_data = [trace];
 			var layout = {
@@ -104,9 +117,9 @@
 					title: 'Date'
 				},
 				yaxis: {
-					// tickformat: ',.1%',
-					title: 'Number of Unique '
-				}
+					title: 'Number of Unique Users'
+				},
+				title: 'Daily Active Users'
 			};
 
 			Plotly.newPlot('DAUDiv', plot_data, layout);

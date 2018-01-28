@@ -30,7 +30,7 @@ def playerDetail(request,account_id):
 def formatDate(year,month,day):
     # From integers to yyyy-MM-dd
     return str(year) + "-" + str(month) + "-" + str(day)
-    
+
 def getPlayerActivityHistory(request,account_id):
 
     rows = cassSession.execute('SELECT * FROM player_daily WHERE account_id=%s', (int(account_id),))
@@ -42,14 +42,13 @@ def getPlayerActivityHistory(request,account_id):
         wins.append(row.matches_won)
         total_time.append(row.time_played_in_sec)
 
-    res = {'dates':dates,'matches':matches,'wins':wins,'total_time':total_time}
+    losses = [matches[i]-wins[i] for i in range(len(matches))]
+    total_time = [x // 60 for x in total_time]
+    res = {'dates':dates,'matches':matches,'wins':wins,'losses':losses,'total_time':total_time}
 
     resJson = json.dumps(res)
 
     return JsonResponse(resJson,safe=False)
-
-
-
 
 # Get num of players in each region from Redis
 def realTimeRegion(request):
@@ -79,7 +78,7 @@ def realTimeRegion(request):
 
     return JsonResponse(resJson,safe=False)
 
-# Given a date, returns DAU in the following 15 days.
+# Given a date, returns DAU in the following 30 days.
 from datetime import date as datetime_date, timedelta
 
 def DAU(request):
@@ -87,7 +86,7 @@ def DAU(request):
     year, month, day = int(date[:4]), int(date[4:6]), int(date[6:])
 
     start_date = datetime_date(year,month,day)
-    delta = 15
+    delta = 30
 
     date_list, num_list = [], []
 

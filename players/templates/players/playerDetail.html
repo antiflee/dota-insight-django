@@ -18,14 +18,38 @@
 {% block content %}
 
 <div class="container">
-	<div class="">
-	  <h2 style="display:inline-block;">
-	    Player {{ account_id }}'s activity
-	  </h2>
+	<div class="row">
+		<div class="col-lg-2">
+			<form class="form-inline">
+				<h4>Query with dates</h4>
+				<div class="col-auto">
+					<label class="sr-only" for="dateInput">dateInput</label>
+					<input type="text" class="form-control mb-2" name="dateInput" value="20120510" id="dateInput" placeholder="yyyyMMdd">
+				</div>
+				<div class="col-auto">
+					<button style="display:block;position:relative;top:-34px;left:104px"
+					id="dateQuerySubmit" type="submit" class="btn btn-success mb-2">Submit</button>
+				</div>
+			</form>
+		</div>
+		<div class="col-lg-3">
+			<form class="form-inline">
+				<h4>Query with account id</h4>
+				<div class="col-auto">
+					<label class="sr-only" for="dateInput">accountIdInput</label>
+					<input type="text" class="form-control mb-2" name="accountIdInput"
+						value="8057" id="accIdInput" placeholder="Enter your account id...">
+				</div>
+				<div class="col-auto">
+					<button style="display:block;position:relative;top:-34px;left:104px"
+					id="playerDetailQuerySubmit" type="submit" class="btn btn-primary mb-2">Submit</button>
+				</div>
+			</form>
+		</div>
 	</div>
 
   <div class="row">
-    <div class="col col-lg-7">
+    <div class="col col-lg-12">
 			<h4 id="messageUpdating">Updating...</h4>
       <div id="playerActivityDiv" width="1400" height="500" style="margin-top:42px;"></div>
     </div>
@@ -64,49 +88,73 @@
 
 		var trace1 = {
 			x: data['dates'],
-			y: data['matches'],
-        type: 'bar',
-        name: 'Matches Played',
-        marker: {
-          color: 'rgb(49,130,189)',
-          opacity: 0.7,
-        }
-		};
-		var trace2 = {
-			x: data['dates'],
 			y: data['wins'],
       type: 'bar',
       name: 'Matches Won',
       marker: {
-        color: 'rgb(24,24,24)',
+        color: 'rgb(4,112,40)',
         opacity: 0.5
       }
+		};
+		var trace2 = {
+			x: data['dates'],
+			y: data['losses'],
+        type: 'bar',
+        name: 'Matches Lost',
+        marker: {
+          color: 'rgb(124,8,39)',
+          opacity: 0.7,
+        }
 		};
 		var trace3 = {
 			x: data['dates'],
 			y: data['total_time'],
-      type: 'bar',
+      type: 'lines',
       name: 'Time Played',
       marker: {
-        color: 'rgb(244,244,24)',
+        color: 'rgb(205,65,244)',
         opacity: 1
-      }
+      },
+  		yaxis: "y2",
 		};
-		var plot_data = [trace1,trace2];
+
+		var plot_data = [trace1,trace2,trace3];
 	  var layout = {
 		  xaxis: {
 		    type: 'date',
 		    title: 'Date'
 		  },
 		  yaxis: {
-				// range: [0,1],
-		    title: "Player's Activity"
+		    title: "Matches played/won"
 		  },
-      barmode: 'group',
+		  yaxis2: {
+		    title: "Time Played (mins)",
+		    titlefont: {color: "rgb(148, 103, 189)"},
+		    tickfont: {color: "rgb(148, 103, 189)"},
+		    overlaying: "y",
+		    side: "right"
+		  },
+		  bargap :0.05,
+      barmode: 'stack',
+			title: "Player's Activity",
 	  };
 
 		Plotly.newPlot('playerActivityDiv', plot_data, layout);
 	}
+
+	$(document.body).on("click", "#dateQuerySubmit", function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+		var date = $("input[name=accountIdInput]").val();
+		window.location.href = "{% url 'players:playersHome' %}";
+  })
+
+	$(document.body).on("click", "#playerDetailQuerySubmit", function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+		var account_id = $("input[name=accountIdInput]").val();
+		window.location.href = "{% url 'players:playersHome' %}"+account_id;
+  })
 
 	$(document).ready(getPlayerActivityHistory(accountId))
   </script>
