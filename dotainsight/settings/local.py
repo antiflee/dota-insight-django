@@ -30,6 +30,7 @@ ALLOWED_HOSTS = [
         "127.0.0.1",
         "34.213.4.249",
         "dotainsight.net",
+        "www.dotainsight.net",
         "dota-insight.com",
     ]
 
