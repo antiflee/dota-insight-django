@@ -29,6 +29,8 @@ ALLOWED_HOSTS = [
         "ec2-34-213-4-249.us-west-2.compute.amazonaws.com",
         "127.0.0.1",
         "34.213.4.249",
+        "dotainsight.net",
+        "dota-insight.com",
     ]
 
 
