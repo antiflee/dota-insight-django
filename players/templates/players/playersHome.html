@@ -24,7 +24,7 @@
 				<h4>Query with dates</h4>
 				<div class="col-auto">
 					<label class="sr-only" for="dateInput">dateInput</label>
-					<input type="text" class="form-control mb-2" name="dateInput" value="20120901" id="dateInput" placeholder="yyyyMMdd">
+					<input type="text" class="form-control mb-2" name="dateInput" value="20120604" id="dateInput" placeholder="yyyyMMdd">
 				</div>
 				<div class="col-auto">
 					<button style="display:block;position:relative;top:-34px;left:104px"
@@ -50,12 +50,12 @@
 
 	<div id="queryWithDatesDiv" class="row">
     <div class="col-lg-6">
-				<h3>Active Players <span class="the-date-queried"><span></h3>
+				<h3>Daily Active Players since <span style="color:greenyellow;" class="the-date-queried"><span></h3>
 				<div id="DAUDiv" width="960" height="500" style="margin-top:42px;"></div>
     </div>
     <div class="col-lg-6">
       <div>
-				<h3>Distribution of Players <span class="the-date-queried"><span></h3>
+				<h3>Distribution of Players on <span style="color:greenyellow;" class="the-date-queried"><span></h3>
         <div id="regions_div" style="position:relative;top:42px;"></div>
         <ul id="regionInfo"></ul>
       </div>
@@ -188,6 +188,7 @@
 		function updateDAUAndTimeRegion(date) {
 				updateDAU(date);
 				updateTimeRegion(date);
+				$(".the-date-queried").text(date);
 		}
 		function startQuery() {
 			var date = $("input[name=dateInput]").val();

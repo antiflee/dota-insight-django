@@ -50,6 +50,10 @@
 
   <div class="row">
     <div class="col col-lg-12">
+			<h3>Player
+				<span id="account-id-span" style="color:greenyellow;"></span>'s
+				Activity Over Time
+			</h3>
 			<h4 id="messageUpdating">Updating...</h4>
       <div id="playerActivityDiv" width="1400" height="500" style="margin-top:42px;"></div>
     </div>
@@ -66,6 +70,7 @@
 	var accountId = {{ account_id }}
 
 	function getPlayerActivityHistory(accountId) {
+		$("#account-id-span").text(accountId);
 		$.ajax({
 			url: "/players/"+accountId.toString()+"/getPlayerActivityHistory",
 			method: "GET",
