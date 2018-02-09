@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^$', home, name='home'),
     url(r'^heroes/', include('heroes.urls')),
     url(r'^players/', include('players.urls')),
+    url(r'^utils/', include('utils.urls')),
 ]
 
 urlpatterns += (static(settings.STATIC_URL, document_root=settings.STATIC_ROOT))

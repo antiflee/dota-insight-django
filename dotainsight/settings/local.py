@@ -47,6 +47,7 @@ INSTALLED_APPS = [
 
     'heroes',
     'players',
+    'utils',
 ]
 
 MIDDLEWARE = [
